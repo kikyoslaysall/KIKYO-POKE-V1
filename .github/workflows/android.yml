@@ -23,11 +23,21 @@ jobs:
       - name: Extract Android project
         run: |
           unzip -q KIKYO_POKE_V2_REAL_BUILD.zip -d extracted
+
           BUILD_DIR=$(find extracted -name settings.gradle -printf '%h\n' | head -n 1)
+
           if [ -z "$BUILD_DIR" ]; then
             echo "settings.gradle not found"
             exit 1
           fi
+
+          if [ ! -d "$BUILD_DIR/app" ]; then
+            echo "Android app folder not found"
+            exit 1
+          fi
+
+          cp google-services.json "$BUILD_DIR/app/google-services.json"
+
           echo "BUILD_DIR=$BUILD_DIR" >> "$GITHUB_ENV"
 
       - name: Setup Gradle
